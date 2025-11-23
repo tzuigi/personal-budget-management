@@ -207,23 +207,7 @@ Pentru instrucțiuni detaliate despre implementarea în producție pe AWS, consu
 - Configurare pentru Amazon RDS (PostgreSQL)
 - Monitorizare cu Amazon CloudWatch
 
-## Contribuție
-
-Dacă dorești să contribui la acest proiect, te rugăm să urmezi acești pași:
-
-1. Fork repository-ul
-2. Creează un branch pentru funcționalitatea ta (`git checkout -b feature/amazing-feature`)
-3. Asigură-te că testele trec (`python tests.py`)
-4. Commit schimbările (`git commit -m 'Add some amazing feature'`)
-5. Push branch-ul (`git push origin feature/amazing-feature`)
-6. Deschide un Pull Request
-
-### Ghiduri pentru dezvoltare
-- Urmează standardele PEP 8 pentru codul Python
-- Adaugă teste pentru funcționalitățile noi
-- Documentează orice modificări în README
-- Testează compatibilitatea cu Python 3.8+
-
 ## Licență
 
 Acest proiect este dezvoltat în scop educațional pentru cursul "Metode de Dezvoltare Software".
+
