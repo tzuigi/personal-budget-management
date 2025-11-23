@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Rapoarte - Buget Personal{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #3a7bd5;
+        --secondary-color: #00d2ff;
+        --income-color: #2ecc71;
+        --expense-color: #e74c3c;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 20px 0;
+    }
+    .income-text {
+        color: var(--income-color);
+    }
+    .expense-text {
+        color: var(--expense-color);
+    }
+    .balance-text {
+        color: var(--primary-color);
+    }
+    .btn-export {
+        background-color: #27ae60;
+        color: white;
+        border: none;
+    }
+    .btn-export:hover {
+        background-color: #219653;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Rapoarte Financiare</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class='bx bx-export'></i> Export Date
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="#" id="export-csv-selected-period">
+                        Export CSV (perioada selectată)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Selector de perioadă -->
+<div class="card">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Luna</label>
+                <select name="month" class="form-select">
+                    {% for m in months %}
+                        <option value="{{ m.value }}" {% if month == m.value %}selected{% endif %}>{{ m.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Anul</label>
+                <select name="year" class="form-select">
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if year == y %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class='bx bx-filter-alt'></i> Filtrează
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Sumarul Lunii -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Sumarul Financiar - {{ months[month-1].name }} {{ year }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h6>Venituri Totale</h6>
+                <p class="h3 income-text">{{ "%.2f"|format(total_income) }} RON</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>Cheltuieli Totale</h6>
+                <p class="h3 expense-text">{{ "%.2f"|format(total_expense) }} RON</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>Sold</h6>
+                <p class="h3 balance-text">{{ "%.2f"|format(balance) }} RON</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafice -->
+<div class="row">
+    <!-- Grafic venituri pe categorii -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Venituri pe Categorii</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="incomeChart"></canvas>
+                </div>
+                {% if not income_labels %}
+                    <p class="text-center text-muted">Nu există date pentru această perioadă.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Grafic cheltuieli pe categorii -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Cheltuieli pe Categorii</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                {% if not expense_labels %}
+                    <p class="text-center text-muted">Nu există date pentru această perioadă.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafic evoluție sold -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Evoluție Sold</h5>
+    </div>
+    <div class="card-body">
+        <div class="chart-container">
+            <canvas id="balanceChart"></canvas>
+        </div>
+        {% if not balance_labels %}
+            <p class="text-center text-muted">Nu există date pentru această perioadă.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if income_labels and income_values and income_colors %}
+<script>
+const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+new Chart(ctxIncome, {
+    type: 'doughnut',
+    data: {
+        labels: {{ income_labels|tojson|safe }},
+        datasets: [{
+            data: {{ income_values|tojson|safe }},
+            backgroundColor: {{ income_colors|tojson|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: { display: false }
+        }
+    }
+});
+</script>
+{% endif %}
+{% if expense_labels and expense_values and expense_colors %}
+<script>
+const ctxExpense = document.getElementById('expenseChart').getContext('2d');
+new Chart(ctxExpense, {
+    type: 'doughnut',
+    data: {
+        labels: {{ expense_labels|tojson|safe }},
+        datasets: [{
+            data: {{ expense_values|tojson|safe }},
+            backgroundColor: {{ expense_colors|tojson|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: { display: false }
+        }
+    }
+});
+</script>
+{% endif %}
+{% if balance_labels and balance_values %}
+<script>
+const ctxBalance = document.getElementById('balanceChart').getContext('2d');
+new Chart(ctxBalance, {
+    type: 'line',
+    data: {
+        labels: {{ balance_labels|tojson|safe }},
+        datasets: [{
+            label: 'Sold',
+            data: {{ balance_values|tojson|safe }},
+            borderColor: '#3a7bd5',
+            backgroundColor: 'rgba(58,123,213,0.1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: false }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

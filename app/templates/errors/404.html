@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Pagină Negăsită{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="display-1 text-primary">404</h1>
+                    <h2>Oops! Pagină Negăsită.</h2>
+                    <p class="lead">
+                        Ne pare rău, dar pagina pe care o căutați nu există sau a fost mutată.
+                    </p>
+                    <hr>
+                    <p>
+                        Puteți încerca să vă întoarceți la pagina anterioară sau să mergeți la pagina principală.
+                    </p>
+                    <a href="javascript:history.back()" class="btn btn-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Înapoi
+                    </a>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Pagina Principală
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .display-1 {
+        font-size: 8rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %} 

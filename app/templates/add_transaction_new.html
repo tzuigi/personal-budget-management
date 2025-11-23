@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Adaugă Tranzacție - Buget Personal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <a href="{{ url_for('main.transactions') }}" class="text-decoration-none text-dark">
+            <i class='bx bx-arrow-back me-2'></i>
+        </a>
+        Adaugă tranzacție nouă
+    </h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", placeholder="Ex: Salariu, Cumpărături, Factură") }}
+                        {% if form.description.errors %}
+                            {% for error in form.description.errors %}
+                                <div class="form-error">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.type.label(class="form-label") }}
+                            {{ form.type(class="form-select", onchange="updateCategoryDropdown()") }}
+                            {% if form.type.errors %}
+                                {% for error in form.type.errors %}
+                                    <div class="form-error">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.amount.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.amount(class="form-control", placeholder="0.00") }}
+                                <span class="input-group-text">RON</span>
+                            </div>
+                            {% if form.amount.errors %}
+                                {% for error in form.amount.errors %}
+                                    <div class="form-error">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.category_id.label(class="form-label") }}
+                            {{ form.category_id(class="form-select") }}
+                            {% if form.category_id.errors %}
+                                {% for error in form.category_id.errors %}
+                                    <div class="form-error">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control", type="date") }}
+                            {% if form.date.errors %}
+                                {% for error in form.date.errors %}
+                                    <div class="form-error">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('main.transactions') }}" class="btn btn-secondary">Anulare</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateCategoryDropdown() {
+        // Această funcție va actualiza dropdown-ul de categorii în funcție de tipul selectat
+        // Implementarea va fi adăugată ulterior cu AJAX
+        const transactionType = document.getElementById('type').value;
+        const categoryDropdown = document.getElementById('category_id');
+        
+        // Aici ar trebui să avem un apel AJAX pentru a obține categoriile în funcție de tip
+        // Pentru moment, vom implementa acest comportament static
+        
+        // Exemplu de manipulare a opțiunilor (va fi înlocuit cu apel AJAX)
+        /*
+        Array.from(categoryDropdown.options).forEach(option => {
+            const optionType = option.getAttribute('data-type');
+            if (optionType && optionType !== transactionType) {
+                option.style.display = 'none';
+            } else {
+                option.style.display = '';
+            }
+        });
+        */
+    }
+    
+    // Apelăm funcția la încărcarea paginii pentru a seta starea inițială
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCategoryDropdown();
+    });
+</script>
+{% endblock %}

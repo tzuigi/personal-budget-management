@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editare Categorie - Buget Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.min.css">
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .sidebar-link {
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: var(--primary-color);
+            color: white !important;
+        }
+        
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+        
+        .color-preview {
+            width: 38px;
+            height: 38px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4>Buget Personal</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link" href="{{ url_for('main.index') }}">
+                                <i class='bx bxs-dashboard'></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link" href="{{ url_for('main.transactions') }}">
+                                <i class='bx bx-transfer'></i>
+                                Tranzacții
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link" href="{{ url_for('main.budgets') }}">
+                                <i class='bx bx-money'></i>
+                                Bugete
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link active" href="{{ url_for('main.categories') }}">
+                                <i class='bx bx-category'></i>
+                                Categorii
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link" href="{{ url_for('main.reports') }}">
+                                <i class='bx bx-line-chart'></i>
+                                Rapoarte
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link sidebar-link" href="{{ url_for('main.logout') }}">
+                                <i class='bx bx-log-out'></i>
+                                Delogare
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <a href="{{ url_for('main.categories') }}" class="text-decoration-none text-dark">
+                            <i class='bx bx-arrow-back me-2'></i>
+                        </a>
+                        Editare categorie
+                    </h1>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-body p-4">
+                                {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-success">{{ message }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
+                                
+                                <form method="post">
+                                    {{ form.hidden_tag() }}
+                                    
+                                    <div class="mb-3">
+                                        {{ form.name.label(class="form-label") }}
+                                        {{ form.name(class="form-control", placeholder="Ex: Alimente, Salariu, Transport") }}
+                                        {% if form.name.errors %}
+                                            {% for error in form.name.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.type.label(class="form-label") }}
+                                        {{ form.type(class="form-select") }}
+                                        {% if form.type.errors %}
+                                            {% for error in form.type.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        {{ form.color.label(class="form-label") }}
+                                        <div class="input-group colorpicker-component">
+                                            {{ form.color(class="form-control") }}
+                                            <span class="input-group-text color-preview"></span>
+                                        </div>
+                                        <div class="form-text">Selectează o culoare pentru reprezentarea grafică a categoriei</div>
+                                        {% if form.color.errors %}
+                                            {% for error in form.color.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <a href="{{ url_for('main.categories') }}" class="btn btn-outline-secondary py-2">Anulare</a>
+                                        {{ form.submit(class="btn btn-primary py-2") }}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/js/bootstrap-colorpicker.min.js"></script>
+    <script>
+        $(function() {
+            // Inițializare colorpicker
+            $('.colorpicker-component').colorpicker({
+                format: 'hex',
+                component: '.color-preview',
+                input: 'input[name="color"]'
+            });
+            
+            // Actualizare preview la încărcarea paginii
+            $('.color-preview').css('background-color', $('input[name="color"]').val());
+        });
+    </script>
+</body>
+</html>

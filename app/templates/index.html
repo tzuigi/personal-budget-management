@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Buget Personal{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #3a7bd5;
+        --secondary-color: #00d2ff;
+        --income-color: #2ecc71;
+        --expense-color: #e74c3c;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        /* Remove transform effect */
+    }
+    .balance-card {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+    .income-card {
+        background-color: #eaffef;
+        border-left: 4px solid var(--income-color);
+    }
+    .expense-card {
+        background-color: #fff5f5;
+        border-left: 4px solid var(--expense-color);
+    }
+    .balance-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .income-icon {
+        background-color: var(--income-color);
+        color: white;
+    }
+    .expense-icon {
+        background-color: var(--expense-color);
+        color: white;
+    }
+    .nav-link.active {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    .alert-budget {
+        border-left: 4px solid #f39c12;
+        background-color: #fffbf0;
+    }
+    .transaction-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .transaction-item {
+        border-left: 4px solid transparent;
+        padding: 10px 15px;
+        margin-bottom: 8px;
+        border-radius: 5px;
+    }
+    .transaction-income {
+        border-left-color: var(--income-color);
+    }
+    .transaction-expense {
+        border-left-color: var(--expense-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('main.add_transaction') }}" class="btn btn-primary me-2">
+            <i class='bx bx-plus'></i> Adaugă tranzacție
+        </a>
+    </div>
+</div>
+
+<!-- Alerte bugete depășite -->
+{% if budget_alerts %}
+    {% for alert in budget_alerts %}
+        <div class="alert alert-budget mb-4">
+            <strong><i class='bx bx-error-circle'></i> Buget depășit:</strong> 
+            Ai depășit bugetul pentru categoria <strong>{{ alert.category }}</strong> cu 
+            <strong>{{ "%.2f"|format(alert.overspent) }} RON</strong>.
+            Buget: {{ "%.2f"|format(alert.budget) }} RON, Cheltuit: {{ "%.2f"|format(alert.spent) }} RON
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Cards Sumar -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card balance-card mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">Sold Curent</h5>
+                <p class="balance-amount">{{ "%.2f"|format(balance) }} RON</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card income-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="card-icon income-icon">
+                            <i class='bx bx-up-arrow-alt'></i>
+                        </div>
+                        <h5 class="card-title">Venituri Totale</h5>
+                        <p class="h4">{{ "%.2f"|format(income) }} RON</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card expense-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="card-icon expense-icon">
+                            <i class='bx bx-down-arrow-alt'></i>
+                        </div>
+                        <h5 class="card-title">Cheltuieli Totale</h5>
+                        <p class="h4">{{ "%.2f"|format(expense) }} RON</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafice și Tranzacții Recente -->
+<div class="row">
+    <!-- Grafic Cheltuieli pe Categorii -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Cheltuieli pe Categorii</h5>
+                <div class="chart-container" style="position: relative; height:300px;">
+                    <canvas id="expensesChart"></canvas>
+                </div>
+                {% if not category_labels %}
+                    <p class="text-center text-muted mt-5">Nu există date disponibile pentru afișarea graficului.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Tranzacții Recente -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Tranzacții Recente</h5>
+                <div class="transaction-list">
+                    {% for transaction in recent_transactions %}
+                        <div class="transaction-item transaction-{{ transaction.type }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ transaction.description }}</strong>
+                                    <div class="text-muted small">
+                                        {{ transaction.date.strftime('%d-%m-%Y') }} | {{ transaction.category.name }}
+                                    </div>
+                                </div>
+                                <div class="fw-bold {% if transaction.type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                    {{ "%.2f"|format(transaction.amount) }} RON
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if not recent_transactions %}
+                        <p class="text-center text-muted">Nu există tranzacții recente.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if category_labels and category_values and category_colors %}
+<script>
+const ctx = document.getElementById('expensesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ category_labels|tojson|safe }},
+        datasets: [{
+            data: {{ category_values|tojson|safe }},
+            backgroundColor: {{ category_colors|tojson|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            title: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

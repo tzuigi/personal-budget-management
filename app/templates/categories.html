@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Categorii - Buget Personal{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #3a7bd5;
+        --secondary-color: #00d2ff;
+        --income-color: #2ecc71;
+        --expense-color: #e74c3c;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .income-badge {
+        background-color: var(--income-color);
+    }
+    .expense-badge {
+        background-color: var(--expense-color);
+    }
+    .color-preview {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Categorii</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('main.add_category') }}" class="btn btn-primary">
+            <i class='bx bx-plus'></i> Adaugă categorie
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Categorii de venituri</h5>
+        {% if income_categories %}
+            <div class="row">
+                {% for category in income_categories %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="p-3 border rounded shadow-sm d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="color-preview" style="background-color: {{ category.color }};"></span>
+                                <span class="fw-bold">{{ category.name }}</span>
+                                <span class="badge income-badge ms-2">Venit</span>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('main.edit_category', id=category.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class='bx bx-edit'></i> Editează
+                                </a>
+                                <form action="{{ url_for('main.delete_category', id=category.id) }}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ești sigur că vrei să ștergi această categorie?')">
+                                        <i class='bx bx-trash'></i> Șterge
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted text-center py-4">Nu există categorii de venituri. <a href="{{ url_for('main.add_category') }}">Adaugă prima categorie de venituri</a></p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Categorii de cheltuieli</h5>
+        {% if expense_categories %}
+            <div class="row">
+                {% for category in expense_categories %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="p-3 border rounded shadow-sm d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="color-preview" style="background-color: {{ category.color }};"></span>
+                                <span class="fw-bold">{{ category.name }}</span>
+                                <span class="badge expense-badge ms-2">Cheltuială</span>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('main.edit_category', id=category.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class='bx bx-edit'></i> Editează
+                                </a>
+                                <form action="{{ url_for('main.delete_category', id=category.id) }}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ești sigur că vrei să ștergi această categorie?')">
+                                        <i class='bx bx-trash'></i> Șterge
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted text-center py-4">Nu există categorii de cheltuieli. <a href="{{ url_for('main.add_category') }}">Adaugă prima categorie de cheltuieli</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
