@@ -227,14 +227,3 @@ Dacă dorești să contribui la acest proiect, te rugăm să urmezi acești paș
 ## Licență
 
 Acest proiect este dezvoltat în scop educațional pentru cursul "Metode de Dezvoltare Software".
-
-## Autor
-
-Dezvoltat ca proiect pentru cursul "Metode de Dezvoltare Software" de la Facultatea de Matematică și Informatică.
-
-## Suport și Contact
-
-Pentru întrebări sau probleme:
-- Creează un Issue în repository
-- Consultă documentația din fișierul `aws_deployment.md` pentru deployment
-- Verifică fișierul `tests.py` pentru exemple de utilizare
