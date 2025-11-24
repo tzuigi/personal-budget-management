@@ -3,6 +3,8 @@
 ## Descriere
 
 Aplicația de gestionare a bugetului personal este o platformă web robustă care ajută utilizatorii să își planifice și să își urmărească cheltuielile și economiile. Oferă o interfață intuitivă pentru adăugarea și clasificarea veniturilor și cheltuielilor, vizualizarea rapoartelor detaliate și stabilirea de bugete cu monitorizare în timp real.
+<img width="1920" height="1080" alt="Dashboard aplicatie" src="https://github.com/user-attachments/assets/1ef928d2-1b75-4bbc-9072-91811515bdc8" />
+
 
 ## Tehnologii utilizate
 
@@ -62,7 +64,6 @@ Aplicația de gestionare a bugetului personal este o platformă web robustă car
 - Notificări flash pentru feedback utilizator
 - Validare JavaScript în timp real
 - Teme de culori și iconuri moderne
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/1ef928d2-1b75-4bbc-9072-91811515bdc8" />
 
 
 ## Structura proiectului
@@ -212,5 +213,6 @@ Pentru instrucțiuni detaliate despre implementarea în producție pe AWS, consu
 ## Licență
 
 Acest proiect este dezvoltat în scop educațional pentru cursul "Metode de Dezvoltare Software".
+
 
 
