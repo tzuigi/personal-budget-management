@@ -62,6 +62,8 @@ Aplicația de gestionare a bugetului personal este o platformă web robustă car
 - Notificări flash pentru feedback utilizator
 - Validare JavaScript în timp real
 - Teme de culori și iconuri moderne
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/1ef928d2-1b75-4bbc-9072-91811515bdc8" />
+
 
 ## Structura proiectului
 
@@ -210,4 +212,5 @@ Pentru instrucțiuni detaliate despre implementarea în producție pe AWS, consu
 ## Licență
 
 Acest proiect este dezvoltat în scop educațional pentru cursul "Metode de Dezvoltare Software".
+
 
