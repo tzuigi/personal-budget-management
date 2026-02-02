@@ -1,5 +1,7 @@
 # Aplicație de Gestionare a Bugetului Personal
 
+Live deployment: **https://budgetdemo.onrender.com**
+
 ## Descriere
 
 Aplicația de gestionare a bugetului personal este o platformă web robustă care ajută utilizatorii să își planifice și să își urmărească cheltuielile și economiile. Oferă o interfață intuitivă pentru adăugarea și clasificarea veniturilor și cheltuielilor, vizualizarea rapoartelor detaliate și stabilirea de bugete cu monitorizare în timp real.
@@ -213,6 +215,7 @@ Pentru instrucțiuni detaliate despre implementarea în producție pe AWS, consu
 ## Licență
 
 Acest proiect este dezvoltat în scop educațional pentru cursul "Metode de Dezvoltare Software".
+
 
 
 
